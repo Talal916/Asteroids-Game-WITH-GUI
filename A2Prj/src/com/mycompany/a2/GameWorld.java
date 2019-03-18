@@ -140,9 +140,14 @@ public class GameWorld {
 			break;
 		case 's':
 			PlayerShip s = new PlayerShip();
+			if(findPS() == null)
+			{
 			gameObjs.add(s);
 			gameObjs.add(findPS().getMissileLauncher());
 			System.out.println("A Player Ship and the Missile Launcher has been created and added to game world!");
+			}
+			else
+				System.out.println("A player ship already exists!");
 			break;
 			
 			
@@ -253,11 +258,6 @@ public class GameWorld {
 		endGameStats();
 		setEndGame(true);
 		
-		
-		
-		
-
-		
 
 	}
 
@@ -363,6 +363,13 @@ public class GameWorld {
 			if(!(gameObjs.get(i) instanceof MissileLauncher))
 				System.out.println(gameObjs.get(i));
 		}
+		
+	}
+
+	public void exitGame() {
+		System.out.println("Are you sure you want to exit the game?");
+		
+		// TODO Auto-generated method stub
 		
 	}
 }
