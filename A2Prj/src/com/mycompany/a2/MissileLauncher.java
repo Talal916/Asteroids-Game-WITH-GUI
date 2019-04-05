@@ -13,8 +13,8 @@ public class MissileLauncher extends MoveableGameObject implements ISteerable
 	}
 
 	@Override
-	public void turn(){
-		launcherDir = launcherDir + 10;
+	public void turn(int amount){
+		launcherDir = launcherDir + amount;
 	}
 
 	public void setLauncherDirection(int x)

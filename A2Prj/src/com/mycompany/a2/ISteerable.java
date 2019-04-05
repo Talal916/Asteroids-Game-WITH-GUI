@@ -3,6 +3,6 @@ package com.mycompany.a2;
 public interface ISteerable 
 {
 
-	public void turn();
+	public void turn(int amount);
 	
 }

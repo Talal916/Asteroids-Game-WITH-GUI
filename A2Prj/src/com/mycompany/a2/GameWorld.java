@@ -1,8 +1,9 @@
 package com.mycompany.a2;
 import java.util.Vector;
+import java.util.Observable;
 
 
-public class GameWorld {
+public class GameWorld extends Observable implements IGameWorld {
 
 	
 	
@@ -12,7 +13,14 @@ public class GameWorld {
 	private int elapsedTime;
 	private int playerLives;
 	private boolean endGame;
+	private boolean soundSetting;
 	
+	
+	private double GWWidth;
+	private double GWHeight;
+
+	private int numMissiles;
+
 	public GameWorld() {
 		init();
 	
@@ -50,6 +58,18 @@ public class GameWorld {
 		return null;
 	}
 	
+	public SpaceStation findSS()
+	{
+		for(int i=0; i < gameObjs.size(); i++)
+		{
+			if(gameObjs.get(i) instanceof SpaceStation)
+			{
+				return (SpaceStation) gameObjs.get(i);
+			}
+		}
+		System.out.println("No Space Station found!");
+		return null;
+	}
 	
 	public MissileLauncher findML()
 	{
@@ -90,7 +110,7 @@ public class GameWorld {
 		return null;
 	}
 	
-	public Missile findMissile() //finds Asteroid and returns index of Asteroid
+	public Missile findMissile() //finds missile and returns Missile obj
 	{
 		for(int i=0; i < gameObjs.size(); i++)
 		{
@@ -100,6 +120,34 @@ public class GameWorld {
 			}
 		}
 		System.out.println("No Missile found!");
+		return null;
+	}
+	
+	public Missile findPMissile() //finds missile and returns Missile obj
+	{
+		for(int i=0; i < gameObjs.size(); i++)
+		{
+			if(gameObjs.get(i) instanceof Missile)
+			{
+				if(((Missile) gameObjs.get(i)).getisFriendly())
+					return (Missile) gameObjs.get(i);
+			}
+		}
+		System.out.println("No Player Missile found!");
+		return null;
+	}
+	
+	public Missile findEMissile() //finds missile and returns Missile obj
+	{
+		for(int i=0; i < gameObjs.size(); i++)
+		{
+			if(gameObjs.get(i) instanceof Missile)
+			{
+				if(!((Missile) gameObjs.get(i)).getisFriendly())
+					return (Missile) gameObjs.get(i);
+			}
+		}
+		System.out.println("No Enemy Missile found!");
 		return null;
 	}
 	
@@ -174,10 +222,10 @@ public class GameWorld {
 		}		
 	}
 
-	public void turnML() {
+	public void turnML(int dir) {
 		if(findML() != null)
 		{
-			findML().turn(); //finds missile launcher, turns it
+			findML().turn(dir); //finds missile launcher, turns it
 			System.out.println("Turning Missile Launcher!");
 		}			
 	}
@@ -225,10 +273,10 @@ public class GameWorld {
 	
 
 	public void missileStrikePS() {
-		if(findPS() != null && findMissile() != null)
+		if(findPS() != null && findEMissile() != null)
 		{
 			gameObjs.remove(findPS());
-			gameObjs.remove(findMissile());
+			gameObjs.remove(findEMissile());
 		}
 		if(playerLives <= 1)
 		{
@@ -243,11 +291,22 @@ public class GameWorld {
 		
 	}
 	
-	public void eliminate() { //missileStrikeNPS
-		if(findES() != null && findMissile() != null)
+	public void missileStrikeAst() { //missileStrikeAst
+		if(findAst() != null && findMissile() != null)
 		{
 			gameObjs.remove(findES());
-			gameObjs.remove(findMissile());
+			gameObjs.remove(findMissile());  //any missile
+			score = score +1000;
+		}
+
+	}
+	
+	
+	public void eliminate() { //missileStrikeNPS
+		if(findES() != null && findPMissile() != null)
+		{
+			gameObjs.remove(findES());
+			gameObjs.remove(findPMissile());
 			score = score +1000;
 		}
 
@@ -372,5 +431,72 @@ public class GameWorld {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public int getMissileCount() {
+		return numMissiles;
+	}
+
+	public int getPoints() {
+		return score;
+	}
+
+	public boolean getSoundSetting() {
+		// TODO Auto-generated method stub
+		return soundSetting;
+	}
+
+	public GameCollection getCollection() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public int getTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void setGWHeight(double mapHeight) {
+			GWHeight = mapHeight;
+	}
+
+	public void setGWWidth(double mapWidth) {
+		// TODO Auto-generated method stub
+		GWWidth = mapWidth;
+	}
+
+	public double getGWHeight() {
+		// TODO Auto-generated method stub
+		return GWHeight;
+	}
+
+	public double getGWWidth() {
+		// TODO Auto-generated method stub
+		return GWWidth;
+	}
+
+	@Override
+	public int getLives() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void setSound() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void missileReload() {
+			PlayerShip 	pS = findPS();
+			SpaceStation sS = findSS();
+			if(pS != null && sS != null)
+			{
+				pS.reloadMissiles();
+				numMissiles = 10;
+				//InformObservers();  //fix this 
+			}
+			
+	}
+
+
 }
 
